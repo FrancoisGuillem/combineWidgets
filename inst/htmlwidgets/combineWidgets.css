@@ -1,0 +1,30 @@
+.cw-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.cw-row {
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.cw-col {
+  align-items: stretch;
+  border: solid 1px yellow;
+  background-color: green;
+}
+
+.cw-widget {
+  width:100%;
+  height:100%;
+  position:absolute;
+}
+
+html, body {
+  background-color: red;
+}
+

@@ -7,10 +7,16 @@
 #' @export
 combineWidgets <- function(..., width = NULL, height = NULL) {
   widgets <- list(...)
+
   data <- lapply(widgets, function(x) x$x)
   widgetType <- sapply(widgets, function(x) class(x)[1])
+  elementId <- sapply(widgets, function(x) {
+    res <- x$elementId
+    if (is.null(res)) res <- paste0("widget", floor(runif(1, max = 1e9)))
+    res
+  })
 
-  x <- list(data = data, widgetType = widgetType);
+  x <- list(data = data, widgetType = widgetType, elementId = elementId);
 
   # create widget
   combinedWidget <- htmlwidgets::createWidget(
@@ -18,7 +24,7 @@ combineWidgets <- function(..., width = NULL, height = NULL) {
     x,
     width = width,
     height = height,
-    package = 'combineWidgets'
+    package = 'combineWidgets',
   )
 
   deps <- lapply(widgets, function(x) {

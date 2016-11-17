@@ -18,12 +18,16 @@ HTMLWidgets.widget({
         var nWidgets = x.widgetType.length;
         window.x = x;
         // Initialize html
+        var html = "";
+        html += '<div class="cw-container">';
         for (var i = 0; i < nWidgets; i++) {
-          el.innerHTML += '<div style="width:100%;height:' + (100 /nWidgets) + '%;float:left;padding:5px;box-sizing: border-box;"><div id="widget' + i + '" style="width:100%;height:100%"></div></div>';
+          html += '<div class="cw-row" style="flex:1"><div  id="' + x.elementId[i] + '" class="cw-widget"></div></div>';
         }
+        html += '</div>';
+        el.innerHTML = html;
 
         for (i = 0; i < nWidgets; i++) {
-          var child = document.getElementById("widget" + i);
+          var child = document.getElementById(x.elementId[i]);
           var widgetFactory = getWidgetFactory(x.widgetType[i]);
           var w = widgetFactory.initialize(child, "100%", (100 /nWidgets) + "%");
           widgetFactory.renderValue(child, x.data[i], w);
