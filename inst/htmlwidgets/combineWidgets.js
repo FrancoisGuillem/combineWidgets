@@ -19,7 +19,7 @@ HTMLWidgets.widget({
         window.x = x;
         // Initialize html
         for (var i = 0; i < nWidgets; i++) {
-          el.innerHTML += '<div id="widget' + i + '" style="width:100%;height:' + (100 /nWidgets) + '%;float:left;"></div>';
+          el.innerHTML += '<div style="width:100%;height:' + (100 /nWidgets) + '%;float:left;padding:5px;box-sizing: border-box;"><div id="widget' + i + '" style="width:100%;height:100%"></div></div>';
         }
 
         for (i = 0; i < nWidgets; i++) {
