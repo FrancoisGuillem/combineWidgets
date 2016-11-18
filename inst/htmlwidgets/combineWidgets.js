@@ -7,6 +7,7 @@ HTMLWidgets.widget({
   factory: function(el, width, height) {
 
     // TODO: define shared variables for this instance
+    var widgets = [];
 
     function getWidgetFactory(name) {
       return HTMLWidgets.widgets.filter(function(x) {return x.name == name})[0];
@@ -16,22 +17,24 @@ HTMLWidgets.widget({
 
       renderValue: function(x) {
         var nWidgets = x.widgetType.length;
-        window.x = x;
+        if (!window.x) window.x = x;
         el.innerHTML = x.html;
 
-        for (i = 0; i < nWidgets; i++) {
+        for (var i = 0; i < nWidgets; i++) {
           var child = document.getElementById(x.elementId[i]);
           var widgetFactory = getWidgetFactory(x.widgetType[i]);
-          var w = widgetFactory.initialize(child, "100%", (100 /nWidgets) + "%");
+          var w = widgetFactory.initialize(child, child.clientWidth, child.clientHeight);
           widgetFactory.renderValue(child, x.data[i], w);
+          widgets.push({factory:widgetFactory, instance:w, el: child});
+          this.resize(el.clientWidth, el.clientHeight);
         }
 
       },
 
       resize: function(width, height) {
-
-        // TODO: code to re-render the widget with a new size
-
+        widgets.forEach(function(x) {
+          x.factory.resize(x.el, x.el.clientWidth, x.el.clientHeight, x.instance);
+        });
       }
 
     };

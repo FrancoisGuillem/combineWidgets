@@ -108,7 +108,7 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL, title = NULL,
   widgetEL <- mapply(
     function(id, size) {
       sprintf('<div class="cw-col" style="flex:%s;-webkit-flex:%s">
-                 <div id="%s" class="cw-widget"></div>
+                 <div id="%s" class="cw-widget" style="width:100%%;height:100%%"></div>
                </div>',
               size, size, id)
     },
