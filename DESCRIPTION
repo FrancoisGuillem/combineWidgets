@@ -1,12 +1,15 @@
 Package: combineWidgets
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Combine Multiple Interactive Plots
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: François Guillem
+Maintainer: Francois Guillem <guillem.francois@gmail.com>
+Description: This package provides the function "combineWidgets". It takes as
+    multiple interactive plots generated with package htmlwidgets and creates
+    a unique view containing all plots. The result is also an htmlwidget, so it
+    can be displayed in the Rstudio viewer, in a browser, in shiny applications
+    or in a Rmarkdown document.
+License: MIT
 Imports:
     htmlwidgets
 Encoding: UTF-8
