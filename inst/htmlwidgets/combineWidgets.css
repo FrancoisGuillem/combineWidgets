@@ -7,6 +7,11 @@
   height: 100%;
 }
 
+.cw-container.cw-by-col {
+  flex-direction: row;
+  -webkit-flex-direction: row;
+}
+
 .cw-row {
   align-items: stretch;
   -webkit-align-items: stretch;
@@ -14,6 +19,11 @@
   display: -webkit-flex;
   flex-direction: row;
   -webkit-flex-direction: row;
+}
+
+.cw-row.cw-by-col {
+  flex-direction: column;
+  -webkit-flex-direction: column;
 }
 
 .cw-col {

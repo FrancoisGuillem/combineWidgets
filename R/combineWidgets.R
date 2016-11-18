@@ -6,7 +6,7 @@
 #'
 #' @export
 combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize = 1,
-                           width = NULL, height = NULL) {
+                           byrow = TRUE, width = NULL, height = NULL) {
   widgets <- lapply(list(...), function(x) {
     if (is.null(x$preRenderHook)) return(x)
     x$preRenderHook(x)
@@ -36,7 +36,9 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize =
     res
   })
 
-  # Constrcut the html of the combined widget
+  # Construct the html of the combined widget
+  dirClass <- ifelse(byrow, "cw-by-row", "cw-by-col")
+
   widgetEL <- mapply(
     function(id, size) {
       sprintf('<div class="cw-col" style="flex:%s;-webkit-flex:%s"><div id="%s" class="cw-widget"></div></div>',
@@ -48,12 +50,12 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize =
 
   rowsEl <- lapply(1:nrow, function(i) {
     content <- widgetEL[((i-1) * ncol + 1):(i * ncol)]
-    sprintf('<div class="cw-row" style="flex:%s;-webkit-flex:%s">%s</div>',
-            rowsize[i], rowsize[i], paste(content, collapse = ""))
+    sprintf('<div class="cw-row %s" style="flex:%s;-webkit-flex:%s">%s</div>',
+            dirClass, rowsize[i], rowsize[i], paste(content, collapse = ""))
   })
 
-  html <- sprintf('<div class="cw-container">%s</div>',
-                  paste(rowsEl, collapse = ""))
+  html <- sprintf('<div class="cw-container %s">%s</div>',
+                  dirClass, paste(rowsEl, collapse = ""))
 
   data <- lapply(widgets, function(x) x$x)
   widgetType <- sapply(widgets, function(x) class(x)[1])
