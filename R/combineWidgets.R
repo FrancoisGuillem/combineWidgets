@@ -5,8 +5,9 @@
 #' @import htmlwidgets
 #'
 #' @export
-combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize = 1,
-                           byrow = TRUE, width = NULL, height = NULL) {
+combineWidgets <- function(..., nrow = NULL, ncol = NULL, title = NULL,
+                           rowsize = 1, colsize = 1, byrow = TRUE,
+                           width = NULL, height = NULL) {
   widgets <- lapply(list(...), function(x) {
     if (is.null(x$preRenderHook)) return(x)
     x$preRenderHook(x)
@@ -46,7 +47,9 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize =
 
   widgetEL <- mapply(
     function(id, size) {
-      sprintf('<div class="cw-col" style="flex:%s;-webkit-flex:%s"><div id="%s" class="cw-widget"></div></div>',
+      sprintf('<div class="cw-col" style="flex:%s;-webkit-flex:%s">
+                 <div id="%s" class="cw-widget"></div>
+               </div>',
               size, size, id)
     },
     id = elementId,
@@ -59,8 +62,16 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize =
             dirClass, rowsize[i], rowsize[i], paste(content, collapse = ""))
   })
 
-  html <- sprintf('<div class="cw-container %s">%s</div>',
-                  dirClass, paste(rowsEl, collapse = ""))
+  content <- sprintf('<div class="cw-content %s">%s</div>',
+                     dirClass, paste(rowsEl, collapse = ""))
+
+  if(!is.null(title) && !title == "") {
+    titleEl <- sprintf('<div><h2 class="cw-title">%s</h2></div>', title)
+  } else {
+    titleEl <- ""
+  }
+
+  html <- sprintf('<div class="cw-container">%s%s</div>', titleEl, content)
 
   data <- lapply(widgets, function(x) x$x)
   widgetType <- sapply(widgets, function(x) class(x)[1])
