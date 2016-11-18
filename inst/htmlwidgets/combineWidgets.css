@@ -9,13 +9,11 @@
   align-items: stretch;
   display: flex;
   flex-direction: row;
-  position: relative;
 }
 
 .cw-col {
   align-items: stretch;
-  border: solid 1px yellow;
-  background-color: green;
+  position: relative;
 }
 
 .cw-widget {
@@ -23,8 +21,3 @@
   height:100%;
   position:absolute;
 }
-
-html, body {
-  background-color: red;
-}
-

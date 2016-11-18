@@ -5,18 +5,48 @@
 #' @import htmlwidgets
 #'
 #' @export
-combineWidgets <- function(..., width = NULL, height = NULL) {
+combineWidgets <- function(..., nrow = NULL, ncol = NULL,
+                           width = NULL, height = NULL) {
   widgets <- list(...)
+  nwidgets <- length(widgets)
 
-  data <- lapply(widgets, function(x) x$x)
-  widgetType <- sapply(widgets, function(x) class(x)[1])
+  # Get number of rows and cols
+  if (!is.null(nrow) && !is.null(ncol) && nrow * ncol < nwidgets) {
+    stop("There are too much widgets compared to the number of rows and columns")
+  } else if (is.null(nrow) && !is.null(ncol)) {
+    nrow <- ceiling(nwidgets / ncol)
+  } else if (!is.null(nrow) && is.null(ncol)) {
+    ncol <- ceiling(nwidgets / nrow)
+  } else {
+    nrow <- ceiling(sqrt(nwidgets))
+    ncol <- ceiling(nwidgets / nrow)
+  }
+
+  # Get the html ID of each widget
   elementId <- sapply(widgets, function(x) {
     res <- x$elementId
     if (is.null(res)) res <- paste0("widget", floor(runif(1, max = 1e9)))
     res
   })
 
-  x <- list(data = data, widgetType = widgetType, elementId = elementId);
+  # Constrcut the html of the widget
+  widgetEL <- sapply(elementId, function(x) {
+    sprintf('<div class="cw-col" style="flex:1"><div id="%s" class="cw-widget"></div></div>', x)
+  })
+
+  rowsEl <- lapply(1:nrow, function(i) {
+    content <- widgetEL[((i-1) * ncol + 1):(i * ncol)]
+    sprintf('<div class="cw-row" style="flex:1">%s</div>', paste(content, collapse = ""))
+  })
+
+  html <- sprintf('<div class="cw-container">%s</div>',
+                  paste(rowsEl, collapse = ""))
+
+  data <- lapply(widgets, function(x) x$x)
+  widgetType <- sapply(widgets, function(x) class(x)[1])
+
+
+  x <- list(data = data, widgetType = widgetType, elementId = elementId, html = html);
 
   # create widget
   combinedWidget <- htmlwidgets::createWidget(
@@ -24,7 +54,7 @@ combineWidgets <- function(..., width = NULL, height = NULL) {
     x,
     width = width,
     height = height,
-    package = 'combineWidgets',
+    package = 'combineWidgets'
   )
 
   deps <- lapply(widgets, function(x) {

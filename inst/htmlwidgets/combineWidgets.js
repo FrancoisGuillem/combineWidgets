@@ -17,14 +17,7 @@ HTMLWidgets.widget({
       renderValue: function(x) {
         var nWidgets = x.widgetType.length;
         window.x = x;
-        // Initialize html
-        var html = "";
-        html += '<div class="cw-container">';
-        for (var i = 0; i < nWidgets; i++) {
-          html += '<div class="cw-row" style="flex:1"><div  id="' + x.elementId[i] + '" class="cw-widget"></div></div>';
-        }
-        html += '</div>';
-        el.innerHTML = html;
+        el.innerHTML = x.html;
 
         for (i = 0; i < nWidgets; i++) {
           var child = document.getElementById(x.elementId[i]);
