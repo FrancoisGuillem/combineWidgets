@@ -25,6 +25,10 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize =
     ncol <- ceiling(nwidgets / nrow)
   }
 
+  # Relative size of rows and cols
+  rowsize <- rep(rowsize, length.out=nrow)
+  colsize <- rep(colsize, length.out = ncol)
+
   # Get the html ID of each widget
   elementId <- sapply(widgets, function(x) {
     res <- x$elementId
@@ -33,13 +37,19 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize =
   })
 
   # Constrcut the html of the combined widget
-  widgetEL <- sapply(elementId, function(x) {
-    sprintf('<div class="cw-col" style="flex:1;-webkit-flex:1"><div id="%s" class="cw-widget"></div></div>', x)
-  })
+  widgetEL <- mapply(
+    function(id, size) {
+      sprintf('<div class="cw-col" style="flex:%s;-webkit-flex:%s"><div id="%s" class="cw-widget"></div></div>',
+              size, size, id)
+    },
+    id = elementId,
+    size = rep(colsize, length.out = nwidgets)
+  )
 
   rowsEl <- lapply(1:nrow, function(i) {
     content <- widgetEL[((i-1) * ncol + 1):(i * ncol)]
-    sprintf('<div class="cw-row" style="flex:1;-webkit-flex:1">%s</div>', paste(content, collapse = ""))
+    sprintf('<div class="cw-row" style="flex:%s;-webkit-flex:%s">%s</div>',
+            rowsize[i], rowsize[i], paste(content, collapse = ""))
   })
 
   html <- sprintf('<div class="cw-container">%s</div>',
