@@ -5,9 +5,12 @@
 #' @import htmlwidgets
 #'
 #' @export
-combineWidgets <- function(..., nrow = NULL, ncol = NULL,
+combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize = 1,
                            width = NULL, height = NULL) {
-  widgets <- list(...)
+  widgets <- lapply(list(...), function(x) {
+    if (is.null(x$preRenderHook)) return(x)
+    x$preRenderHook(x)
+  })
   nwidgets <- length(widgets)
 
   # Get number of rows and cols
@@ -29,14 +32,14 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL,
     res
   })
 
-  # Constrcut the html of the widget
+  # Constrcut the html of the combined widget
   widgetEL <- sapply(elementId, function(x) {
-    sprintf('<div class="cw-col" style="flex:1"><div id="%s" class="cw-widget"></div></div>', x)
+    sprintf('<div class="cw-col" style="flex:1;-webkit-flex:1"><div id="%s" class="cw-widget"></div></div>', x)
   })
 
   rowsEl <- lapply(1:nrow, function(i) {
     content <- widgetEL[((i-1) * ncol + 1):(i * ncol)]
-    sprintf('<div class="cw-row" style="flex:1">%s</div>', paste(content, collapse = ""))
+    sprintf('<div class="cw-row" style="flex:1;-webkit-flex:1">%s</div>', paste(content, collapse = ""))
   })
 
   html <- sprintf('<div class="cw-container">%s</div>',
