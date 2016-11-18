@@ -20,19 +20,24 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize =
     nrow <- ceiling(nwidgets / ncol)
   } else if (!is.null(nrow) && is.null(ncol)) {
     ncol <- ceiling(nwidgets / nrow)
-  } else {
+  } else if (is.null(nrow) && is.null(ncol)) {
     nrow <- ceiling(sqrt(nwidgets))
     ncol <- ceiling(nwidgets / nrow)
   }
+
+  ncells <- nrow * ncol
 
   # Relative size of rows and cols
   rowsize <- rep(rowsize, length.out=nrow)
   colsize <- rep(colsize, length.out = ncol)
 
   # Get the html ID of each widget
-  elementId <- sapply(widgets, function(x) {
-    res <- x$elementId
+  elementId <- sapply(widgets[1:ncells], function(x) {
+    if (is.null(x)) res <- NULL
+    else res <- x$elementId
+
     if (is.null(res)) res <- paste0("widget", floor(runif(1, max = 1e9)))
+
     res
   })
 
@@ -45,7 +50,7 @@ combineWidgets <- function(..., nrow = NULL, ncol = NULL, rowsize = 1, colsize =
               size, size, id)
     },
     id = elementId,
-    size = rep(colsize, length.out = nwidgets)
+    size = rep(colsize, length.out = ncells)
   )
 
   rowsEl <- lapply(1:nrow, function(i) {
